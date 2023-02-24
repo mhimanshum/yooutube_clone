@@ -1,42 +1,22 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { API_KEY } from '../api/apiClient';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Home() {
-  const [videos, setVideos] = useState([]);
-
-  useEffect(() => {
-    const fetchVideos = async () => {
-      try {
-        const res = await axios.get(
-          'https://www.googleapis.com/youtube/v3/search',
-          {
-            params: {
-              key: API_KEY,
-              q: 'computer',
-              part: 'snippet',
-              type: 'video',
-            },
-          }
-        );
-        console.log(res.data.items);
-        setVideos(res.data.items);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchVideos();
-  }, []);
-
+function Home({ videos }) {
+  const navigate = useNavigate();
   return (
     <div>
-      <p>All Videos</p>
       <div className="grid grid-cols-3">
         {videos.length > 0 &&
           videos.map((video, index) => {
             return (
-              <div key={index}>
-                <img src={video.snippet.thumbnails.default.url} />
+              <div
+                key={index}
+                onClick={() => navigate(`/videos/${video.id.videoId}`)}
+              >
+                <img
+                  src={video.snippet.thumbnails.default.url}
+                  alt="video_thumbnail"
+                />
                 <p>{video.snippet.title}</p>
               </div>
             );
